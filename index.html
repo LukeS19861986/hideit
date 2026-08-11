@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111714">
+  <meta name="description" content="Permanently redact sensitive information from PDFs in your browser. No uploads. No account. Zero fuss.">
+  <link rel="canonical" href="https://hideit.co.za/">
+  <meta property="og:title" content="HideIt — Permanent PDF redaction">
+  <meta property="og:description" content="Hide what they don't need to see. ZERO FUSS.">
+  <meta property="og:url" content="https://hideit.co.za/">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="styles.css?v=1.0.0">
+  <title>HideIt — Permanent PDF Redaction</title>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="./" aria-label="HideIt home"><span>Hide</span><b>It</b></a>
+  <nav><a href="how-it-works.html">How it works</a><a href="about.html">About</a></nav>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow">PRIVATE PDF REDACTION</p>
+    <h1>Hide what they<br>don't need to see.</h1>
+    <div class="zero">ZERO FUSS.</div>
+    <p class="lede">Black out private information permanently. Your PDF stays on your device.</p>
+    <div class="drop" id="dropZone">
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+      <button id="chooseBtn" class="primary">Choose PDF</button>
+      <p>or drop a PDF here</p>
+      <small>Permanent redaction · No upload · No account</small>
+    </div>
+    <p id="error" class="error" role="alert"></p>
+  </section>
+
+  <section id="workspace" class="workspace hidden">
+    <div class="workbar">
+      <div><strong id="fileName">Document.pdf</strong><span id="pageLabel">Page 1 of 1</span></div>
+      <div class="work-actions"><button id="undoBtn" class="ghost" disabled>Undo</button><button id="clearPageBtn" class="ghost">Clear page</button></div>
+    </div>
+
+    <div class="instruction"><span class="dot"></span> Drag over anything you want permanently hidden.</div>
+
+    <div class="viewer-wrap">
+      <button id="prevBtn" class="pager" aria-label="Previous page">‹</button>
+      <div id="pageStage" class="page-stage">
+        <canvas id="pdfCanvas"></canvas>
+        <canvas id="redactionCanvas"></canvas>
+      </div>
+      <button id="nextBtn" class="pager" aria-label="Next page">›</button>
+    </div>
+
+    <div class="mobile-page-nav">
+      <button id="prevMobile" class="ghost">← Previous</button>
+      <span id="mobilePageLabel">1 / 1</span>
+      <button id="nextMobile" class="ghost">Next →</button>
+    </div>
+
+    <div class="export-panel">
+      <div>
+        <strong>Ready when you are.</strong>
+        <span id="redactionCount">0 redactions</span>
+      </div>
+      <button id="exportBtn" class="primary danger-safe">Redact &amp; download</button>
+    </div>
+    <p class="permanent-note">The downloaded copy is rebuilt from flattened page images. Covered content is not retained as selectable PDF text.</p>
+    <button id="startOverBtn" class="text-btn">Start over</button>
+  </section>
+
+  <section class="trust">
+    <article><b>Permanent</b><p>Redactions are burned into a new flattened PDF.</p></article>
+    <article><b>Private</b><p>Processing happens locally in your browser.</p></article>
+    <article><b>Simple</b><p>No accounts, subscriptions or complicated tools.</p></article>
+  </section>
+</main>
+
+<footer><span>HideIt</span><nav><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></nav><small>© <span id="year"></span> HideIt</small></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="app.js?v=1.0.0"></script>
+</body>
+</html>
