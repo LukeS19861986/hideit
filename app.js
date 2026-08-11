@@ -1,107 +1,65 @@
-(() => {
-  const $ = id => document.getElementById(id);
-  const fileInput=$("fileInput"), chooseBtn=$("chooseBtn"), dropZone=$("dropZone"), workspace=$("workspace"), error=$("error");
-  const pdfCanvas=$("pdfCanvas"), redactCanvas=$("redactionCanvas"), stage=$("pageStage");
-  const ctx=pdfCanvas.getContext("2d"), rctx=redactCanvas.getContext("2d");
-  let pdf=null, bytes=null, pageNum=1, pageCount=0, scale=1.55, redactions={}, drawing=false, start=null, current=null;
+import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
 
-  if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  $("year").textContent=new Date().getFullYear();
+const $=s=>document.querySelector(s);
+const input=$("#fileInput"), choose=$("#chooseBtn"), drop=$("#dropZone"), editor=$("#editor");
+const canvas=$("#pdfCanvas"), overlay=$("#redactCanvas"), ctx=canvas.getContext("2d"), octx=overlay.getContext("2d");
+let bytes=null,pdf=null,page=1,scale=1.45,redactions={},drawing=false,start=null,current=null;
 
-  chooseBtn.onclick=()=>fileInput.click();
-  fileInput.onchange=()=>fileInput.files[0]&&loadFile(fileInput.files[0]);
-  ["dragenter","dragover"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.add("drag")}));
-  ["dragleave","drop"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.remove("drag")}));
-  dropZone.addEventListener("drop",e=>{const f=e.dataTransfer.files[0]; if(f) loadFile(f)});
+choose.onclick=()=>input.click();
+input.onchange=e=>e.target.files[0]&&load(e.target.files[0]);
+["dragenter","dragover"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add("drag")}));
+["dragleave","drop"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove("drag")}));
+drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)load(f)});
+$("#closeBtn").onclick=()=>{editor.classList.add("hidden");pdf=null;bytes=null;redactions={};input.value="";window.scrollTo({top:0,behavior:"smooth"})};
+$("#prevBtn").onclick=()=>{if(page>1){page--;render()}};
+$("#nextBtn").onclick=()=>{if(pdf&&page<pdf.numPages){page++;render()}};
+$("#undoBtn").onclick=()=>{const a=redactions[page]||[];a.pop();paint()};
+$("#clearBtn").onclick=()=>{redactions[page]=[];paint()};
+$("#downloadBtn").onclick=download;
 
-  async function loadFile(file){
-    error.textContent="";
-    if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")){error.textContent="Please choose a PDF file.";return}
-    try{
-      bytes=new Uint8Array(await file.arrayBuffer());
-      pdf=await pdfjsLib.getDocument({data:bytes.slice()}).promise;
-      pageCount=pdf.numPages; pageNum=1; redactions={};
-      $("fileName").textContent=file.name;
-      workspace.classList.remove("hidden"); document.querySelector(".hero").classList.add("hidden");
-      await renderPage();
-    }catch(e){console.error(e);error.textContent="HideIt couldn't open that PDF."}
-  }
-
-  async function renderPage(){
-    const page=await pdf.getPage(pageNum);
-    const maxW=Math.min(780,window.innerWidth-70);
-    const base=page.getViewport({scale:1});
-    scale=Math.min(1.8,maxW/base.width);
-    const vp=page.getViewport({scale});
-    pdfCanvas.width=redactCanvas.width=Math.round(vp.width);
-    pdfCanvas.height=redactCanvas.height=Math.round(vp.height);
-    stage.style.width=vp.width+"px";stage.style.height=vp.height+"px";
-    await page.render({canvasContext:ctx,viewport:vp}).promise;
-    drawRedactions(); updateUI();
-  }
-  function updateUI(){
-    $("pageLabel").textContent=`Page ${pageNum} of ${pageCount}`;
-    $("mobilePageLabel").textContent=`${pageNum} / ${pageCount}`;
-    $("prevBtn").disabled=$("prevMobile").disabled=pageNum<=1;
-    $("nextBtn").disabled=$("nextMobile").disabled=pageNum>=pageCount;
-    const total=Object.values(redactions).reduce((n,a)=>n+a.length,0);
-    $("redactionCount").textContent=`${total} redaction${total===1?"":"s"}`;
-    $("undoBtn").disabled=!(redactions[pageNum]?.length);
-  }
-  function drawRedactions(){
-    rctx.clearRect(0,0,redactCanvas.width,redactCanvas.height);
-    rctx.fillStyle="#050505";
-    (redactions[pageNum]||[]).forEach(x=>rctx.fillRect(x.x,x.y,x.w,x.h));
-    if(current)rctx.fillRect(current.x,current.y,current.w,current.h);
-  }
-  function point(e){
-    const rect=redactCanvas.getBoundingClientRect(), sx=redactCanvas.width/rect.width, sy=redactCanvas.height/rect.height;
-    const t=e.touches?.[0]||e.changedTouches?.[0]||e;
-    return {x:(t.clientX-rect.left)*sx,y:(t.clientY-rect.top)*sy};
-  }
-  function begin(e){e.preventDefault();drawing=true;start=point(e);current={x:start.x,y:start.y,w:0,h:0}}
-  function move(e){if(!drawing)return;e.preventDefault();const p=point(e);current={x:Math.min(start.x,p.x),y:Math.min(start.y,p.y),w:Math.abs(p.x-start.x),h:Math.abs(p.y-start.y)};drawRedactions()}
-  function end(e){if(!drawing)return;e.preventDefault();drawing=false;if(current&&current.w>6&&current.h>6){(redactions[pageNum]??=[]).push(current)}current=null;drawRedactions();updateUI()}
-  redactCanvas.addEventListener("pointerdown",begin);redactCanvas.addEventListener("pointermove",move);window.addEventListener("pointerup",end);
-
-  async function go(n){if(n<1||n>pageCount)return;pageNum=n;await renderPage()}
-  $("prevBtn").onclick=$("prevMobile").onclick=()=>go(pageNum-1);
-  $("nextBtn").onclick=$("nextMobile").onclick=()=>go(pageNum+1);
-  $("undoBtn").onclick=()=>{redactions[pageNum]?.pop();drawRedactions();updateUI()};
-  $("clearPageBtn").onclick=()=>{redactions[pageNum]=[];drawRedactions();updateUI()};
-  $("startOverBtn").onclick=()=>location.reload();
-
-  $("exportBtn").onclick=async()=>{
-    const total=Object.values(redactions).reduce((n,a)=>n+a.length,0);
-    if(!total){alert("Draw at least one redaction first.");return}
-    const btn=$("exportBtn"), old=btn.textContent;btn.disabled=true;btn.textContent="Making safe copy…";
-    try{
-      const out=await PDFLib.PDFDocument.create();
-      for(let i=1;i<=pageCount;i++){
-        const page=await pdf.getPage(i), base=page.getViewport({scale:1});
-        const exportScale=Math.min(2.2,2200/base.width);
-        const vp=page.getViewport({scale:exportScale});
-        const c=document.createElement("canvas");c.width=Math.round(vp.width);c.height=Math.round(vp.height);
-        const cctx=c.getContext("2d");cctx.fillStyle="#fff";cctx.fillRect(0,0,c.width,c.height);
-        await page.render({canvasContext:cctx,viewport:vp}).promise;
-        cctx.fillStyle="#000";
-        const pageR=redactions[i]||[];
-        // Stored redactions are in the interactive render coordinate system.
-        // Convert via normalized page coordinates so export resolution can differ.
-        const interactivePage=await pdf.getPage(i);
-        const ivp=interactivePage.getViewport({scale:Math.min(1.8,Math.min(780,window.innerWidth-70)/interactivePage.getViewport({scale:1}).width)});
-        pageR.forEach(r=>cctx.fillRect(r.x/ivp.width*c.width,r.y/ivp.height*c.height,r.w/ivp.width*c.width,r.h/ivp.height*c.height));
-        const blob=await new Promise(res=>c.toBlob(res,"image/jpeg",.94));
-        const jpg=await out.embedJpg(await blob.arrayBuffer());
-        const p=out.addPage([base.width,base.height]);p.drawImage(jpg,{x:0,y:0,width:base.width,height:base.height});
-      }
-      out.setTitle("");out.setAuthor("");out.setSubject("");out.setKeywords([]);out.setCreator("HideIt");out.setProducer("HideIt");
-      const saved=await out.save();
-      const url=URL.createObjectURL(new Blob([saved],{type:"application/pdf"}));
-      const a=document.createElement("a");a.href=url;a.download=`HideIt-${new Date().toISOString().slice(0,10)}.pdf`;a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),3000);
-      btn.textContent="✓ Safe copy downloaded";setTimeout(()=>btn.textContent=old,2200);
-    }catch(e){console.error(e);alert("HideIt couldn't create the redacted copy.");btn.textContent=old}
-    finally{btn.disabled=false}
-  };
-})();
+async function load(file){
+ if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf")) return alert("Please choose a PDF file.");
+ bytes=new Uint8Array(await file.arrayBuffer());
+ pdf=await pdfjsLib.getDocument({data:bytes.slice()}).promise; page=1; redactions={};
+ editor.classList.remove("hidden"); await render(); editor.scrollIntoView({behavior:"smooth"});
+}
+async function render(){
+ const p=await pdf.getPage(page), vp=p.getViewport({scale});
+ canvas.width=vp.width;canvas.height=vp.height;overlay.width=vp.width;overlay.height=vp.height;
+ await p.render({canvasContext:ctx,viewport:vp}).promise;
+ $("#pageLabel").textContent=`Page ${page} of ${pdf.numPages}`;paint();
+}
+function pos(e){
+ const r=overlay.getBoundingClientRect(),t=e.touches?.[0]||e;
+ return {x:(t.clientX-r.left)*(overlay.width/r.width),y:(t.clientY-r.top)*(overlay.height/r.height)};
+}
+function begin(e){e.preventDefault();drawing=true;start=pos(e);current={x:start.x,y:start.y,w:0,h:0}}
+function move(e){if(!drawing)return;e.preventDefault();const p=pos(e);current={x:Math.min(start.x,p.x),y:Math.min(start.y,p.y),w:Math.abs(p.x-start.x),h:Math.abs(p.y-start.y)};paint(current)}
+function end(e){if(!drawing)return;drawing=false;if(current.w>4&&current.h>4)(redactions[page]??=[]).push(current);current=null;paint()}
+overlay.addEventListener("pointerdown",begin);overlay.addEventListener("pointermove",move);window.addEventListener("pointerup",end);
+function paint(temp){
+ octx.clearRect(0,0,overlay.width,overlay.height);octx.fillStyle="#050806";
+ for(const r of redactions[page]||[])octx.fillRect(r.x,r.y,r.w,r.h);
+ if(temp)octx.fillRect(temp.x,temp.y,temp.w,temp.h);
+}
+async function download(){
+ if(!bytes)return;
+ const {PDFDocument}=PDFLib;
+ const out=await PDFDocument.create();
+ for(let i=1;i<=pdf.numPages;i++){
+   const p=await pdf.getPage(i), vp=p.getViewport({scale:2});
+   const c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;
+   const cctx=c.getContext("2d");await p.render({canvasContext:cctx,viewport:vp}).promise;
+   cctx.fillStyle="#050806";
+   const baseVp=p.getViewport({scale});
+   const sx=vp.width/baseVp.width,sy=vp.height/baseVp.height;
+   for(const r of redactions[i]||[])cctx.fillRect(r.x*sx,r.y*sy,r.w*sx,r.h*sy);
+   const jpg=await new Promise(res=>c.toBlob(res,"image/jpeg",0.92));
+   const img=await out.embedJpg(await jpg.arrayBuffer());
+   const pg=out.addPage([p.view[2]-p.view[0],p.view[3]-p.view[1]]);
+   pg.drawImage(img,{x:0,y:0,width:pg.getWidth(),height:pg.getHeight()});
+ }
+ const data=await out.save(),blob=new Blob([data],{type:"application/pdf"}),url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download="HideIt-redacted.pdf";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}

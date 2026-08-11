@@ -1,1 +1,2 @@
-HideIt is a browser-based PDF redaction utility at https://hideit.co.za/. It lets users draw permanent redactions over PDF pages and download a newly flattened PDF. Files are processed locally in the browser.
+# HideIt
+Private browser-based PDF redaction. Permanent flattened output. No account. No PDF upload. Zero fuss.
