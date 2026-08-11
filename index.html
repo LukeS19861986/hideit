@@ -6,14 +6,17 @@
   <title>HideIt — Private PDF Redaction. Zero Fuss.</title>
   <meta name="description" content="Permanently black out private information in PDFs. No upload, no account — processing stays in your browser.">
   <link rel="icon" href="favicon.svg">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 </head>
 <body>
 <header class="site-header wrap">
-  <a class="brand" href="./">Hide<span>It</span></a>
-  <nav><a href="how-it-works.html">How it works</a><a href="about.html">About</a></nav>
+  <a class="brand family-brand" href="./" aria-label="HideIt home">
+    <span class="family-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="brand-word">Hide<span>It</span></span>
+  </a>
+  <span class="privacy-pill">◉&nbsp; 100% private</span>
 </header>
 
 <main>
@@ -23,11 +26,13 @@
     <h1>Hide what they<br>don’t need to see.<br><em>ZERO FUSS.</em></h1>
     <p class="lede">Black out private information permanently.<br>Your PDF stays on your device.</p>
 
-    <div id="dropZone" class="drop-zone">
+    <div id="dropZone" class="drop-zone compact-drop">
       <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
-      <button id="chooseBtn" class="primary">▱&nbsp;&nbsp; Choose PDF</button>
-      <p>or drop a PDF here</p>
-      <small>Permanent redaction · No upload · No account</small>
+      <div class="upload-row">
+        <button id="chooseBtn" class="primary family-cta">↥&nbsp;&nbsp; Choose PDF</button>
+        <span>or drop a PDF here</span>
+      </div>
+      <small>Permanent redaction &nbsp;•&nbsp; No upload &nbsp;•&nbsp; No account</small>
     </div>
   </div>
 
@@ -80,13 +85,16 @@
 </section>
 
 <section class="features wrap">
-  <article><div class="icon">▣</div><div><h3>Permanent</h3><p>Redactions are burned into a<br>new flattened PDF.</p></div></article>
-  <article><div class="icon">◇</div><div><h3>Private</h3><p>Processing happens locally<br>in your browser.</p></div></article>
-  <article><div class="icon">✓</div><div><h3>Simple</h3><p>No accounts, subscriptions<br>or complicated tools.</p></div></article>
+  <article><h3>Private by design</h3><p>Your PDF is processed locally and never uploaded to us.</p></article>
+  <article><h3>Permanent redaction</h3><p>Redactions are burned into a newly flattened PDF.</p></article>
+  <article><h3>One simple job</h3><p>No signup, no account, no confusing tools. Just redact and download.</p></article>
 </section>
 </main>
 
-<footer class="wrap"><a class="brand smallbrand" href="./">Hide<span>It</span></a><div><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div><span>© 2026 HideIt</span></footer>
-<script type="module" src="app.js?v=2"></script>
+<footer class="wrap">
+  <span>© 2026 HideIt</span>
+  <div><a href="how-it-works.html">How it works</a><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+</footer>
+<script type="module" src="app.js?v=3"></script>
 </body>
 </html>
