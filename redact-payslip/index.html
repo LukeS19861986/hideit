@@ -50,6 +50,22 @@
   ]
 }
 </script>
+  <style>
+    /* Keep the product illustration visible on feeder pages at phone widths. */
+    @media (max-width:560px){
+      .hero{overflow:hidden}
+      .hero-art{
+        display:flex;
+        width:620px;
+        height:540px;
+        flex:none;
+        align-self:center;
+        transform:scale(.55);
+        transform-origin:top center;
+        margin:8px auto -225px;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="site-header wrap">
