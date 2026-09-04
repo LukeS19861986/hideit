@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SH8G4YK78V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SH8G4YK78V');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base href="/">
+  <title>Redact PDF Online Free | Private PDF Redaction | HideIt</title>
+  <link rel="canonical" href="https://hideit.co.za/redact-pdf/">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="Redact a PDF online for free. Permanently black out private information in your browser with no upload or account.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://hideit.co.za/redact-pdf/#webpage",
+      "url": "https://hideit.co.za/redact-pdf/",
+      "name": "Redact PDF Online Free | Private PDF Redaction | HideIt",
+      "description": "Redact a PDF online for free. Permanently black out private information in your browser with no upload or account.",
+      "isPartOf": {
+        "@id": "https://hideit.co.za/#website"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "HideIt",
+      "url": "https://hideit.co.za/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-header wrap">
+  <a class="brand family-brand" href="./" aria-label="HideIt home">
+    <span class="family-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="brand-word">Hide<span>It</span></span>
+  </a>
+  <span class="privacy-pill">◉&nbsp; 100% private</span>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="eyebrow">FREE PDF REDACTION</p>
+    <h1>Redact a PDF online.<br><em>ZERO FUSS.</em></h1>
+    <p class="lede">Draw over private information and download a newly flattened PDF. Your file stays on your device.</p>
+
+    <div id="dropZone" class="drop-zone compact-drop">
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+      <div class="upload-row">
+        <button id="chooseBtn" class="primary family-cta">↥&nbsp;&nbsp; Choose PDF</button>
+        <span>or drop a PDF here</span>
+      </div>
+      <small>Permanent redaction &nbsp;•&nbsp; No upload &nbsp;•&nbsp; No account</small>
+    </div>
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <div class="orb"></div>
+    <div class="mock-window">
+      <div class="mock-top"><span class="dots">● ● ●</span><b>1 / 4</b><span>− &nbsp; 100% &nbsp; +</span></div>
+      <div class="mock-paper">
+        <h3>BANK STATEMENT</h3>
+        <div class="mock-row"><span>Account Number</span><i class="bar w1"></i></div>
+        <div class="mock-row"><span>Statement Date</span><i class="bar w2"></i></div>
+        <h4>TRANSACTIONS</h4>
+        <div class="line"></div>
+        <div class="txn"><i></i><b></b><small>••••</small></div>
+        <div class="txn"><i></i><b class="wide"></b><small>••••</small></div>
+        <div class="selected"><span></span></div>
+        <div class="txn"><i></i><b></b><small>••••</small></div>
+        <div class="txn"><i></i><b></b><small>••••</small></div>
+        <div class="txn"><i></i><b class="xwide"></b></div>
+      </div>
+    </div>
+    <div class="tool-float">
+      <div class="active">▧ <span>Redact</span></div>
+      <div>↶ <span>Undo</span></div>
+      <div>♲ <span>Clear page</span></div>
+      <hr>
+      <div class="green">⇩ <span>Download</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="editor" class="editor wrap hidden">
+  <div class="editor-head">
+    <div><p class="eyebrow">YOUR PDF</p><h2>Click and drag to hide information.</h2></div>
+    <button id="closeBtn" class="ghost">Close PDF</button>
+  </div>
+  <div class="editor-shell">
+    <div class="toolbar">
+      <button id="prevBtn">←</button><span id="pageLabel">Page 1 of 1</span><button id="nextBtn">→</button>
+      <span class="spacer"></span>
+      <button id="undoBtn">Undo</button><button id="clearBtn">Clear page</button>
+      <button id="downloadBtn" class="primary small">Download redacted PDF</button>
+    </div>
+    <div id="canvasWrap" class="canvas-wrap">
+      <canvas id="pdfCanvas"></canvas>
+      <canvas id="redactCanvas"></canvas>
+    </div>
+    <p class="hint">Drag black boxes over anything you want permanently removed. Download creates a new flattened PDF.</p>
+  </div>
+</section>
+
+<section class="features wrap">
+  <article><h3>Private by design</h3><p>Your PDF is processed locally and never uploaded to us.</p></article>
+  <article><h3>Permanent redaction</h3><p>Redactions are burned into a newly flattened PDF.</p></article>
+  <article><h3>One simple job</h3><p>No signup, no account, no confusing tools. Just redact and download.</p></article>
+</section>
+<section class="features wrap" aria-label="Redact private information from a PDF.">
+  <article><h2>Redact private information from a PDF.</h2><p>HideIt lets you place permanent black boxes over information you do not want to share. The result is rendered into a newly flattened PDF so the covered content is not simply hidden behind an editable annotation.</p></article>
+  <article><h3>Permanent output</h3><p>Redactions are burned into a flattened copy of the PDF.</p></article>
+  <article><h3>Nothing uploaded</h3><p>The document is processed locally in your browser.</p></article>
+  <article><h3>Simple controls</h3><p>Redact, undo, clear a page and download.</p></article>
+</section>
+</main>
+
+<footer class="wrap">
+  <span>© 2026 HideIt</span>
+  <div><a href="how-it-works.html">How it works</a><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div>
+</footer>
+<script type="module" src="app.js?v=3"></script>
+</body>
+</html>
