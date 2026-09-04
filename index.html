@@ -17,6 +17,22 @@
   <link rel="stylesheet" href="styles.css?v=3">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <style>
+    /* Show the product illustration on the homepage at phone widths. */
+    @media (max-width:560px){
+      .hero{overflow:hidden}
+      .hero-art{
+        display:flex;
+        width:100%;
+        height:540px;
+        flex:none;
+        align-self:center;
+        transform:scale(.62);
+        transform-origin:top center;
+        margin:8px auto -190px;
+      }
+    }
+  </style>
 </head>
 <body>
 <header class="site-header wrap">
